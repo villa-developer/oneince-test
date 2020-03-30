@@ -7,6 +7,22 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/license.svg" alt="License"></a>
 </p>
 
+## About Test
+
+It's a test done for the Frontend developer vacancy.
+
+Made with Laravel as backend and Vue.js in the front. The database is in mysql.
+
+The application has migrations, to execute them once the database is configured they must execute
+
+- php artisan migrate --seed
+
+To run the seeds too.
+
+
+The site was uploaded to the following URL
+https://www.oneinc.codigogourmet.com/
+
 ## About Laravel
 
 Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
