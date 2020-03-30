@@ -12,5 +12,13 @@
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('index');
 });
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');
+
+Route::resource('accounts', 'AccountController')->only(['store', 'update', 'show']);
+Route::resource('payments', 'PaymentController')->except(['edit', 'create']);
+Route::get('products', 'ProductsController');
