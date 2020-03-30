@@ -2037,34 +2037,53 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   mixins: [_mixin_rulesComponent__WEBPACK_IMPORTED_MODULE_0__["default"], _mixin_axiosMethodsComponent__WEBPACK_IMPORTED_MODULE_1__["default"]],
-  props: ['user', 'account', 'payments'],
+  props: ['user'],
   data: function data() {
     return {
       csrf: document.querySelector('meta[name="csrf-token"]').getAttribute("content"),
-      localAccount: this.account,
+      account: this.user.account,
+      payments: this.user.payments,
       balanceDialog: false,
       // Dialog for add balance
       balance: '0',
 
       /** PAYMENTS */
       paymentDialog: false,
-      localPayments: this.payments,
-      amount: 0
+      deletePaymentDialog: false,
+      activePayment: null,
+      editedIndex: -1,
+      amount: 0,
+      // TABLE
+      headers: [{
+        text: 'Created at',
+        value: 'created_at'
+      }, {
+        text: 'Amount',
+        value: 'amount'
+      }, {
+        text: 'Actions',
+        value: 'actions'
+      }]
     };
   },
   methods: {
     createBalance: function createBalance() {
       var _this = this;
 
-      var route = this.localAccount ? '/accounts/' + this.localAccount.id : '/accounts';
+      var route = this.account ? '/accounts/' + this.account.id : '/accounts';
       var data = $('#balanceForm').serialize();
       axios.post(route, data).then(function (response) {
         if (response) {
-          _this.localAccount = response.data;
+          _this.account = response.data;
 
           _this.$notify({
             group: 'alert',
@@ -2086,11 +2105,34 @@ __webpack_require__.r(__webpack_exports__);
       var _this2 = this;
 
       var paymentData = $('#paymentForm').serialize();
-      axios.post('/payments', paymentData).then(function (response) {
+      var route = this.activePayment ? "/payments/".concat(this.activePayment.id) : '/payments';
+      axios.post(route, paymentData).then(function (response) {
         if (response) {
-          _this2.localPayments.push(response.data.payment);
+          if (_this2.activePayment) {
+            _this2.payments[_this2.editedIndex].amount = response.data.payment.amount;
 
-          _this2.localAccount = response.data.account;
+            _this2.closePaymentModal();
+
+            _this2.$notify({
+              group: 'alert',
+              title: 'Yeah!',
+              text: 'Update successful',
+              position: 'bottom-right'
+            });
+          } else {
+            _this2.payments.push(response.data.payment);
+
+            _this2.$notify({
+              group: 'alert',
+              title: 'Yeah!',
+              text: 'Succesful transaction',
+              position: 'bottom-right'
+            });
+          }
+
+          _this2.account = response.data.account;
+
+          _this2.closePaymentModal();
         }
       }, function (error) {
         _this2.$notify({
@@ -2101,6 +2143,48 @@ __webpack_require__.r(__webpack_exports__);
           position: 'bottom-right'
         });
       });
+    },
+    editPayment: function editPayment(payment) {
+      this.editedIndex = this.payments.indexOf(payment);
+      this.activePayment = payment;
+      this.amount = this.activePayment.amount;
+      this.paymentDialog = true;
+    },
+    showDeleteAlert: function showDeleteAlert(payment) {
+      this.editedIndex = this.payments.indexOf(payment);
+      this.activePayment = payment;
+      this.deletePaymentDialog = true;
+    },
+    deletePayment: function deletePayment() {
+      var _this3 = this;
+
+      axios["delete"]("/payments/".concat(this.activePayment.id)).then(function (response) {
+        if (response) {
+          _this3.payments.splice(_this3.editedIndex, 1);
+
+          _this3.account = response.data;
+
+          _this3.cancelDelete();
+
+          _this3.$notify({
+            group: 'alert',
+            title: 'Yeah!',
+            text: 'Payment removed',
+            position: 'bottom-right'
+          });
+        }
+      });
+    },
+    closePaymentModal: function closePaymentModal() {
+      this.$refs.paymentForm.reset();
+      this.paymentDialog = false;
+      this.activePayment = false;
+      this.paymentDialog = false;
+    },
+    cancelDelete: function cancelDelete() {
+      this.editedIndex = -1;
+      this.activePayment = null;
+      this.deletePaymentDialog = false;
     }
   }
 });
@@ -2116,6 +2200,8 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+//
+//
 //
 //
 //
@@ -2212,6 +2298,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   mixins: [_mixin_rulesComponent__WEBPACK_IMPORTED_MODULE_0__["default"]],
@@ -2246,6 +2334,8 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+//
+//
 //
 //
 //
@@ -33211,7 +33301,7 @@ var render = function() {
                     1
                   ),
                   _vm._v(" "),
-                  _vm.localAccount
+                  _vm.account
                     ? _c(
                         "v-btn",
                         {
@@ -33236,14 +33326,12 @@ var render = function() {
               ),
               _vm._v(" "),
               _c("v-col", { attrs: { cols: "12" } }, [
-                _c("h5", [
+                _c("h1", [
                   _vm._v("Balance: "),
                   _c("span", [
                     _vm._v(
                       " $" +
-                        _vm._s(
-                          _vm.localAccount ? _vm.localAccount.balance : "0"
-                        ) +
+                        _vm._s(_vm.account ? _vm.account.balance : "0") +
                         " "
                     )
                   ])
@@ -33254,41 +33342,47 @@ var render = function() {
                 "v-col",
                 { attrs: { cols: "12" } },
                 [
-                  _c("v-simple-table", {
-                    attrs: { height: "300px" },
+                  _c("v-data-table", {
+                    attrs: { headers: _vm.headers, items: _vm.payments },
                     scopedSlots: _vm._u([
                       {
-                        key: "default",
-                        fn: function() {
+                        key: "item.actions",
+                        fn: function(ref) {
+                          var item = ref.item
                           return [
-                            _c("thead", [
-                              _c("tr", [
-                                _c("th", { staticClass: "text-left" }, [
-                                  _vm._v("User")
-                                ]),
-                                _vm._v(" "),
-                                _c("th", { staticClass: "text-left" }, [
-                                  _vm._v("Amount")
-                                ]),
-                                _vm._v(" "),
-                                _c("th", { staticClass: "text-left" }, [
-                                  _vm._v("Acctions")
+                            _c(
+                              "v-btn",
+                              {
+                                attrs: { color: "info", small: "" },
+                                on: {
+                                  click: function($event) {
+                                    return _vm.editPayment(item)
+                                  }
+                                }
+                              },
+                              [
+                                _c("v-icon", [
+                                  _vm._v("mdi-circle-edit-outline")
                                 ])
-                              ])
-                            ]),
+                              ],
+                              1
+                            ),
                             _vm._v(" "),
-                            _c("tbody", [
-                              _c("tr", [
-                                _c("td", [_vm._v("user")]),
-                                _vm._v(" "),
-                                _c("td", [_vm._v("$500")]),
-                                _vm._v(" "),
-                                _c("td")
-                              ])
-                            ])
+                            _c(
+                              "v-btn",
+                              {
+                                attrs: { color: "error", small: "" },
+                                on: {
+                                  click: function($event) {
+                                    return _vm.showDeleteAlert(item)
+                                  }
+                                }
+                              },
+                              [_c("v-icon", [_vm._v("mdi-delete")])],
+                              1
+                            )
                           ]
-                        },
-                        proxy: true
+                        }
                       }
                     ])
                   })
@@ -33340,7 +33434,7 @@ var render = function() {
                       }
                     },
                     [
-                      _vm.localAccount
+                      _vm.account
                         ? _c("input", {
                             attrs: {
                               type: "hidden",
@@ -33479,6 +33573,16 @@ var render = function() {
                         domProps: { value: _vm.csrf }
                       }),
                       _vm._v(" "),
+                      _vm.activePayment
+                        ? _c("input", {
+                            attrs: {
+                              type: "hidden",
+                              value: "put",
+                              name: "_method"
+                            }
+                          })
+                        : _vm._e(),
+                      _vm._v(" "),
                       _c(
                         "v-row",
                         [
@@ -33519,7 +33623,7 @@ var render = function() {
                                   attrs: { text: "", color: "error" },
                                   on: {
                                     click: function($event) {
-                                      _vm.paymentDialog = false
+                                      return _vm.closePaymentModal()
                                     }
                                   }
                                 },
@@ -33528,8 +33632,16 @@ var render = function() {
                               _vm._v(" "),
                               _c(
                                 "v-btn",
-                                { attrs: { type: "submit", color: "success" } },
-                                [_vm._v("Update balance")]
+                                { attrs: { type: "submit", color: "info" } },
+                                [
+                                  _vm._v(
+                                    _vm._s(
+                                      _vm.activePayment
+                                        ? "Update payment"
+                                        : "Add payment"
+                                    )
+                                  )
+                                ]
                               )
                             ],
                             1
@@ -33539,6 +33651,76 @@ var render = function() {
                       )
                     ],
                     1
+                  )
+                ],
+                1
+              )
+            ],
+            1
+          )
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c(
+        "v-dialog",
+        {
+          attrs: {
+            persistent: "",
+            "max-width": "500px",
+            transition: "dialog-transition"
+          },
+          model: {
+            value: _vm.deletePaymentDialog,
+            callback: function($$v) {
+              _vm.deletePaymentDialog = $$v
+            },
+            expression: "deletePaymentDialog"
+          }
+        },
+        [
+          _c(
+            "v-card",
+            [
+              _c(
+                "v-card-title",
+                [
+                  _c("v-icon", [_vm._v("mdi-alert-box")]),
+                  _vm._v(
+                    " Are you sure you want to delete the payment?\n      "
+                  )
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "v-card-actions",
+                { staticClass: "text-right" },
+                [
+                  _c(
+                    "v-btn",
+                    {
+                      attrs: { color: "info", text: "" },
+                      on: {
+                        click: function($event) {
+                          return _vm.cancelDelete()
+                        }
+                      }
+                    },
+                    [_vm._v("Cancelar")]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "v-btn",
+                    {
+                      attrs: { color: "error", text: "" },
+                      on: {
+                        click: function($event) {
+                          return _vm.deletePayment()
+                        }
+                      }
+                    },
+                    [_vm._v("Delete")]
                   )
                 ],
                 1
@@ -33587,16 +33769,22 @@ var render = function() {
             [
               _c(
                 "v-card",
-                { staticClass: "pa-5" },
                 [
                   _c(
                     "v-row",
                     [
-                      _c("v-col", { attrs: { cols: "12", md: "6" } }),
+                      _c(
+                        "v-col",
+                        {
+                          staticClass: "login",
+                          attrs: { cols: "12", md: "6" }
+                        },
+                        [_c("div", { staticClass: "filter" })]
+                      ),
                       _vm._v(" "),
                       _c(
                         "v-col",
-                        { attrs: { cols: "12", md: "6" } },
+                        { staticClass: "pa-4", attrs: { cols: "12", md: "6" } },
                         [
                           _c(
                             "v-form",
@@ -33738,7 +33926,14 @@ var render = function() {
                   _c(
                     "v-row",
                     [
-                      _c("v-col", { attrs: { cols: "12", md: "6" } }),
+                      _c(
+                        "v-col",
+                        {
+                          staticClass: "register",
+                          attrs: { cols: "12", md: "6" }
+                        },
+                        [_c("div", { staticClass: "filter" })]
+                      ),
                       _vm._v(" "),
                       _c(
                         "v-col",
@@ -33959,10 +34154,12 @@ var render = function() {
         [
           _c("v-toolbar-title"),
           _vm._v(" "),
-          _c("img", {
-            staticClass: "logo",
-            attrs: { src: "/images/logo/one-inc-logo-01.png", alt: "one-inc" }
-          }),
+          _c("a", { attrs: { href: "/" } }, [
+            _c("img", {
+              staticClass: "logo",
+              attrs: { src: "/images/logo/one-inc-logo-01.png", alt: "one-inc" }
+            })
+          ]),
           _vm._v(" "),
           _c("v-spacer"),
           _vm._v(" "),
@@ -33975,13 +34172,13 @@ var render = function() {
                     _c("v-icon", { attrs: { left: "" } }, [
                       _vm._v("mdi-account-circle")
                     ]),
-                    _vm._v("\r\n              login\r\n            ")
+                    _vm._v("\n              login\n            ")
                   ],
                   1
                 ),
                 _vm._v(" "),
                 _c("v-btn", { attrs: { text: "", href: "/register" } }, [
-                  _vm._v("\r\n              register\r\n            ")
+                  _vm._v("\n              register\n            ")
                 ])
               ]
             : [
@@ -34007,7 +34204,7 @@ var render = function() {
                       }
                     }
                   },
-                  [_vm._v("\r\n              logout\r\n            ")]
+                  [_vm._v("\n              logout\n            ")]
                 )
               ]
         ],
@@ -89470,8 +89667,8 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! C:\Users\ing_c\projects\one-inc-test\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! C:\Users\ing_c\projects\one-inc-test\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! /Users/fullstack/projects/oneinc/resources/js/app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! /Users/fullstack/projects/oneinc/resources/sass/app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

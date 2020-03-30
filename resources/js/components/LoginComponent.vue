@@ -2,10 +2,12 @@
 <v-container>
   <v-row>
       <v-col cols="12">
-          <v-card class="pa-5">
+          <v-card>
             <v-row>
-                <v-col cols="12" md="6"></v-col>
-                <v-col cols="12" md="6">
+                <v-col cols="12" md="6" class="login">
+                    <div class="filter"></div>
+                </v-col>
+                <v-col cols="12" md="6" class="pa-4">
                     <v-form v-model="formValid" method="post" :action="loginRoute">
                         <input type="hidden" name="_token" :value="csrf">
                         <v-row>

@@ -2,5 +2,7 @@
 
 
 @section('content')
-    <home-component :user="{{ Auth::user() }}" :account="{{ (Auth::user()->account) ? Auth::user()->account : 'null' }}"></home-composnent>
+    <home-component 
+        :user="{{ $user }}">
+    </home-composnent>
 @endsection

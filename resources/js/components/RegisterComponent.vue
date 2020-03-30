@@ -4,7 +4,9 @@
           <v-col cols="12">
               <v-card>
                   <v-row>
-                      <v-col cols="12" md="6"></v-col>
+                      <v-col cols="12" md="6" class="register">
+                          <div class="filter"></div>
+                      </v-col>
                       <v-col cols="12" md="6">
                           <v-form id="registerForm" ref="registerForm" v-model="formValid" method="post" :action="registerRoute" class="pa-4" @submit.prevent="register">
                               <v-alert type="error" :value="errors.length">

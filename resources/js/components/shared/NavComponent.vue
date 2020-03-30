@@ -2,7 +2,9 @@
 <div>
     <v-toolbar>
           <v-toolbar-title></v-toolbar-title>
-          <img src="/images/logo/one-inc-logo-01.png" class="logo" alt="one-inc">
+          <a href="/">
+            <img src="/images/logo/one-inc-logo-01.png" class="logo" alt="one-inc">
+          </a>
           <v-spacer></v-spacer>
           <template v-if="!user">
             <v-btn text href="/login">

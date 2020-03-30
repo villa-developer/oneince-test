@@ -9,3 +9,30 @@
   width: 150px;
 }
 
+.notification-content {
+  font-size: 17px;
+}
+
+.register {
+  background-image: url("/images/bg-register.webp");
+  background-position: center;
+  background-size: cover;
+  position: relative;
+}
+
+.filter {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: 0;
+  background-color: rgba(0, 38, 62, 0.6);
+}
+
+.login {
+  background-image: url("/images/login-bg.png");
+  background-position: center;
+  background-size: cover;
+  position: relative;
+}
+

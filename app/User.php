@@ -37,6 +37,8 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+    protected $with = ['account', 'payments'];
+
     public function payments()
     {
         return $this->hasMany(Payment::class);

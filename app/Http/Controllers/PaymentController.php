@@ -55,7 +55,7 @@ class PaymentController extends Controller
 
         return response()->json([
             'payment' => $payment,
-            'account' => $user->account
+            'account' => $user->account->fresh()
         ]);
     }
 
@@ -90,7 +90,30 @@ class PaymentController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'amount' => 'required|min:1|numeric'
+        ]);
+
+        $payment = Payment::findOrFail($id);
+        $user = User::findOrFail($request->user_id);
+        $diff = '';
+
+        
+        $new_balance = ($user->account->balance + $payment->amount) - $request->amount;
+        if($new_balance < 0) {
+            abort(422, "You cannot add a payment greater than the amount you have in your account");
+        }
+        $payment->amount = $request->amount;
+        $payment->save();
+        $user->account()->update([
+            'balance' => $new_balance
+        ]);
+
+        return response()->json([
+            'payment' => $payment,
+            'account' => $user->account->fresh()
+        ]);
     }
 
     /**
@@ -101,6 +124,19 @@ class PaymentController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $payment = Payment::findOrFail($id);
+        $user = $payment->user;
+
+        /**
+         * Sumamos la cantidad eliminada
+         */
+        $new_balance = $user->account->balance + $payment->amount;
+
+        $user->account->update(
+            ['balance' => $new_balance]
+        );
+
+        $payment->delete();
+        return response()->json($user->account->fresh());
     }
 }
