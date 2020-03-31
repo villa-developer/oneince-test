@@ -3,10 +3,10 @@
     <v-container>
       <v-row>
         <v-col cols="12" class="text-right">
-          <v-btn color="success" @click.stop="balanceDialog = true">
+          <v-btn class="ma-2" color="success" @click.stop="balanceDialog = true">
             <v-icon left>mdi-currency-usd</v-icon> Add money to my account
           </v-btn>
-          <v-btn color="info" v-if="account" @click="paymentDialog = true">
+          <v-btn class="ma-2" color="info" v-if="account" @click="paymentDialog = true">
             <v-icon left>mdi-plus</v-icon> Add payment
           </v-btn>
         </v-col>
@@ -118,7 +118,7 @@ export default {
       amount: 0,
       // TABLE
       headers: [
-        {text: 'Created at', value: 'created_at'},
+        {text: 'Date of payment', value: 'created_at'},
         {text: 'Amount', value: 'amount'},
         {text: 'Actions', value: 'actions'}
       ]

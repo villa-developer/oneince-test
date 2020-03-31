@@ -27,6 +27,10 @@
   bottom: 0;
   top: 0;
   background-color: rgba(0, 38, 62, 0.6);
+  padding-top: 33%;
+  text-transform: uppercase;
+  color: white;
+  text-align: center;
 }
 
 .login {
@@ -34,5 +38,12 @@
   background-position: center;
   background-size: cover;
   position: relative;
+}
+
+@media (max-width: 467px) {
+  .filter {
+    position: static;
+    padding: 20px 0;
+  }
 }
 

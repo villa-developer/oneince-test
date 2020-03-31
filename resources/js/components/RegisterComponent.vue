@@ -5,7 +5,9 @@
               <v-card>
                   <v-row>
                       <v-col cols="12" md="6" class="register">
-                          <div class="filter"></div>
+                          <div class="filter">
+                              <h1>Register</h1>
+                          </div>
                       </v-col>
                       <v-col cols="12" md="6">
                           <v-form id="registerForm" ref="registerForm" v-model="formValid" method="post" :action="registerRoute" class="pa-4" @submit.prevent="register">
@@ -31,7 +33,7 @@
                                         <v-text-field v-model="pwrdc" type="password" name="password_confirmation" label="Confirm password" outlined :rules="passwordConfirmationRule"></v-text-field>
                                     </v-col>
                                     <v-col cols="12">
-                                        <v-btn  type="submit" block color="success" x-large >Complete Registration</v-btn>
+                                        <v-btn type="submit" block color="success" rounded x-large >Complete Registration</v-btn>
                                     </v-col>
                                 </v-row>
                             </v-form>

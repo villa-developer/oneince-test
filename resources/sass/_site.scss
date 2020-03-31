@@ -15,11 +15,22 @@
     right: 0;
     bottom: 0;
     top: 0;
-    background-color: rgba(0, 38, 62, 0.60)
+    background-color: rgba(0, 38, 62, 0.60);
+    padding-top: 33%;
+    text-transform: uppercase;
+    color: white;
+    text-align: center;
 }
 .login{
     background-image: url('/images/login-bg.png');
     background-position: center;
     background-size: cover;
     position: relative;
+}
+
+@media(max-width: 467px) {
+    .filter{
+        position: static;
+        padding: 20px 0;
+    }
 }

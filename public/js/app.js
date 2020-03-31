@@ -2064,7 +2064,7 @@ __webpack_require__.r(__webpack_exports__);
       amount: 0,
       // TABLE
       headers: [{
-        text: 'Created at',
+        text: 'Date of payment',
         value: 'created_at'
       }, {
         text: 'Amount',
@@ -2233,6 +2233,13 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['loginRoute'],
   data: function data() {
@@ -2255,6 +2262,8 @@ __webpack_require__.r(__webpack_exports__);
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _mixin_rulesComponent__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./mixin/rulesComponent */ "./resources/js/components/mixin/rulesComponent.js");
+//
+//
 //
 //
 //
@@ -33284,6 +33293,7 @@ var render = function() {
                   _c(
                     "v-btn",
                     {
+                      staticClass: "ma-2",
                       attrs: { color: "success" },
                       on: {
                         click: function($event) {
@@ -33305,6 +33315,7 @@ var render = function() {
                     ? _c(
                         "v-btn",
                         {
+                          staticClass: "ma-2",
                           attrs: { color: "info" },
                           on: {
                             click: function($event) {
@@ -33762,6 +33773,7 @@ var render = function() {
     [
       _c(
         "v-row",
+        { staticClass: "mt-5" },
         [
           _c(
             "v-col",
@@ -33779,13 +33791,26 @@ var render = function() {
                           staticClass: "login",
                           attrs: { cols: "12", md: "6" }
                         },
-                        [_c("div", { staticClass: "filter" })]
+                        [
+                          _c("div", { staticClass: "filter" }, [
+                            _c("h1", [
+                              _vm._v("Welcome to my "),
+                              _c("span", [_vm._v("test")])
+                            ])
+                          ])
+                        ]
                       ),
                       _vm._v(" "),
                       _c(
                         "v-col",
                         { staticClass: "pa-4", attrs: { cols: "12", md: "6" } },
                         [
+                          _c("div", { staticClass: "text-center" }, [
+                            _c("img", {
+                              attrs: { src: "/images/user.png", alt: "" }
+                            })
+                          ]),
+                          _vm._v(" "),
                           _c(
                             "v-form",
                             {
@@ -33855,10 +33880,16 @@ var render = function() {
                                             type: "submir",
                                             block: "",
                                             color: "success",
-                                            "x-large": ""
+                                            "x-large": "",
+                                            rounded: ""
                                           }
                                         },
-                                        [_vm._v("Sign in")]
+                                        [
+                                          _c("v-icon", [
+                                            _vm._v("mdi-arrow-right")
+                                          ])
+                                        ],
+                                        1
                                       )
                                     ],
                                     1
@@ -33932,7 +33963,11 @@ var render = function() {
                           staticClass: "register",
                           attrs: { cols: "12", md: "6" }
                         },
-                        [_c("div", { staticClass: "filter" })]
+                        [
+                          _c("div", { staticClass: "filter" }, [
+                            _c("h1", [_vm._v("Register")])
+                          ])
+                        ]
                       ),
                       _vm._v(" "),
                       _c(
@@ -34091,6 +34126,7 @@ var render = function() {
                                             type: "submit",
                                             block: "",
                                             color: "success",
+                                            rounded: "",
                                             "x-large": ""
                                           }
                                         },
