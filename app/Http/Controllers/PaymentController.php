@@ -48,13 +48,25 @@ class PaymentController extends Controller
         }
 
         $new_balance = $user->account->balance - $request->amount;
+
+        /** Creacion del pago */
         $payment = Payment::create($request->all());
+
+        /** Si tiene un comentario lo agregamos */
+        if ($request->body) {
+            $payment->comments()->create([
+                'user_id' => $request->user_id,
+                'body' => $request->body
+            ]);
+        }
+
+        /** Actualizacion del balance */
         $user->account()->update([
             'balance' => $new_balance
         ]);
 
         return response()->json([
-            'payment' => $payment,
+            'payment' => $payment->load('comments'),
             'account' => $user->account->fresh()
         ]);
     }

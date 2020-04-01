@@ -27,4 +27,6 @@ class Payment extends Model
     {
         return $this->hasMany(File::class);
     }
+
+    protected $with = ['comments'];
 }

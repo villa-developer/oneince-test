@@ -28,6 +28,13 @@
     position: relative;
 }
 
+.comment{
+    padding: 10px 15px;
+    border-radius: 5px;
+    font-size: 13px;
+    background-color: #dcf8c6;
+}
+
 @media(max-width: 467px) {
     .filter{
         position: static;

@@ -2042,6 +2042,79 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -2062,6 +2135,13 @@ __webpack_require__.r(__webpack_exports__);
       activePayment: null,
       editedIndex: -1,
       amount: 0,
+      // COMMENTS
+      commentDrawer: false,
+      comments: [],
+      addComentDialog: false,
+      deleteComment: null,
+      commentIndex: null,
+      deleteCommentDialog: false,
       // TABLE
       headers: [{
         text: 'Date of payment',
@@ -2185,6 +2265,44 @@ __webpack_require__.r(__webpack_exports__);
       this.editedIndex = -1;
       this.activePayment = null;
       this.deletePaymentDialog = false;
+    },
+    // COMMENT
+    showComments: function showComments(payment) {
+      this.activePayment = payment;
+      this.comments = payment.comments;
+      this.commentDrawer = true;
+    },
+    addComment: function addComment() {
+      var _this4 = this;
+
+      var data = $('#addCommentForm').serialize();
+      axios.post('/comments', data).then(function (response) {
+        _this4.comments.push(response.data);
+
+        _this4.addComentDialog = false;
+
+        _this4.$refs.addCommentForm.reset();
+      });
+    },
+    deletShowDialog: function deletShowDialog(comment, idx) {
+      this.deleteComment = comment;
+      this.commentIndex = idx;
+      this.deleteCommentDialog = true;
+    },
+    commentDelete: function commentDelete() {
+      var _this5 = this;
+
+      axios["delete"]("/comments/".concat(this.deleteComment.id)).then(function (response) {
+        if (response) {
+          console.log(response.data);
+
+          _this5.comments.splice(_this5.commentIndex, 1);
+
+          _this5.deleteComment = null;
+          _this5.commentIndex = null;
+          _this5.deleteCommentDialog = false;
+        }
+      });
     }
   }
 });
@@ -33306,7 +33424,7 @@ var render = function() {
                       _c("v-icon", { attrs: { left: "" } }, [
                         _vm._v("mdi-currency-usd")
                       ]),
-                      _vm._v(" Add money to my account\n        ")
+                      _vm._v(" Add money to my account\n          ")
                     ],
                     1
                   ),
@@ -33316,7 +33434,7 @@ var render = function() {
                         "v-btn",
                         {
                           staticClass: "ma-2",
-                          attrs: { color: "info" },
+                          attrs: { color: "info", disabled: _vm.commentDrawer },
                           on: {
                             click: function($event) {
                               _vm.paymentDialog = true
@@ -33327,7 +33445,7 @@ var render = function() {
                           _c("v-icon", { attrs: { left: "" } }, [
                             _vm._v("mdi-plus")
                           ]),
-                          _vm._v(" Add payment\n        ")
+                          _vm._v(" Add payment\n          ")
                         ],
                         1
                       )
@@ -33336,18 +33454,22 @@ var render = function() {
                 1
               ),
               _vm._v(" "),
-              _c("v-col", { attrs: { cols: "12" } }, [
-                _c("h1", [
-                  _vm._v("Balance: "),
-                  _c("span", [
-                    _vm._v(
-                      " $" +
-                        _vm._s(_vm.account ? _vm.account.balance : "0") +
-                        " "
-                    )
+              _c(
+                "v-col",
+                { staticClass: "text-right", attrs: { cols: "12" } },
+                [
+                  _c("h1", [
+                    _vm._v("Balance: "),
+                    _c("span", [
+                      _vm._v(
+                        " $" +
+                          _vm._s(_vm.account ? _vm.account.balance : "0") +
+                          " "
+                      )
+                    ])
                   ])
-                ])
-              ]),
+                ]
+              ),
               _vm._v(" "),
               _c(
                 "v-col",
@@ -33378,6 +33500,48 @@ var render = function() {
                               ],
                               1
                             ),
+                            _vm._v(" "),
+                            item.comments.length
+                              ? _c(
+                                  "v-badge",
+                                  {
+                                    attrs: {
+                                      bordered: "",
+                                      color: "error",
+                                      overlap: "",
+                                      content: item.comments.length
+                                    }
+                                  },
+                                  [
+                                    _c(
+                                      "v-btn",
+                                      {
+                                        attrs: { color: "primary", small: "" },
+                                        on: {
+                                          click: function($event) {
+                                            return _vm.showComments(item)
+                                          }
+                                        }
+                                      },
+                                      [_c("v-icon", [_vm._v("mdi-chat")])],
+                                      1
+                                    )
+                                  ],
+                                  1
+                                )
+                              : _c(
+                                  "v-btn",
+                                  {
+                                    attrs: { color: "primary", small: "" },
+                                    on: {
+                                      click: function($event) {
+                                        return _vm.showComments(item)
+                                      }
+                                    }
+                                  },
+                                  [_c("v-icon", [_vm._v("mdi-chat")])],
+                                  1
+                                ),
                             _vm._v(" "),
                             _c(
                               "v-btn",
@@ -33427,7 +33591,7 @@ var render = function() {
           _c(
             "v-card",
             [
-              _c("v-card-title", [_vm._v("\n        Balance\n      ")]),
+              _c("v-card-title", [_vm._v("\n          Balance\n        ")]),
               _vm._v(" "),
               _c(
                 "v-card-text",
@@ -33515,7 +33679,7 @@ var render = function() {
                               _c(
                                 "v-btn",
                                 { attrs: { type: "submit", color: "success" } },
-                                [_vm._v("Add payment")]
+                                [_vm._v("Update balance")]
                               )
                             ],
                             1
@@ -33556,7 +33720,15 @@ var render = function() {
           _c(
             "v-card",
             [
-              _c("v-card-title", [_vm._v("\n        New payment\n      ")]),
+              _c("v-card-title", [
+                _vm._v(
+                  "\n          " +
+                    _vm._s(
+                      _vm.activePayment ? "Update payment" : "New payment"
+                    ) +
+                    "\n        "
+                )
+              ]),
               _vm._v(" "),
               _c(
                 "v-card-text",
@@ -33620,6 +33792,24 @@ var render = function() {
                             ],
                             1
                           ),
+                          _vm._v(" "),
+                          !_vm.activePayment
+                            ? _c(
+                                "v-col",
+                                { attrs: { cols: "12" } },
+                                [
+                                  _c("v-textarea", {
+                                    attrs: {
+                                      outlined: "",
+                                      name: "body",
+                                      label: "Comment",
+                                      value: ""
+                                    }
+                                  })
+                                ],
+                                1
+                              )
+                            : _vm._e(),
                           _vm._v(" "),
                           _c(
                             "v-col",
@@ -33698,7 +33888,7 @@ var render = function() {
                 [
                   _c("v-icon", [_vm._v("mdi-alert-box")]),
                   _vm._v(
-                    " Are you sure you want to delete the payment?\n      "
+                    " Are you sure you want to delete the payment?\n        "
                   )
                 ],
                 1
@@ -33728,6 +33918,262 @@ var render = function() {
                       on: {
                         click: function($event) {
                           return _vm.deletePayment()
+                        }
+                      }
+                    },
+                    [_vm._v("Delete")]
+                  )
+                ],
+                1
+              )
+            ],
+            1
+          )
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c(
+        "v-dialog",
+        {
+          attrs: {
+            persistent: "",
+            "max-width": "500px",
+            transition: "dialog-transition"
+          },
+          model: {
+            value: _vm.addComentDialog,
+            callback: function($$v) {
+              _vm.addComentDialog = $$v
+            },
+            expression: "addComentDialog"
+          }
+        },
+        [
+          _c(
+            "v-card",
+            [
+              _c("v-card-title", [_vm._v("\n          New comment\n        ")]),
+              _vm._v(" "),
+              _c(
+                "v-card-text",
+                [
+                  _c(
+                    "v-form",
+                    {
+                      ref: "addCommentForm",
+                      attrs: { id: "addCommentForm" },
+                      on: {
+                        submit: function($event) {
+                          $event.preventDefault()
+                          return _vm.addComment()
+                        }
+                      }
+                    },
+                    [
+                      _c("input", {
+                        attrs: { type: "hidden", name: "_token" },
+                        domProps: { value: _vm.csrf }
+                      }),
+                      _vm._v(" "),
+                      _c("input", {
+                        attrs: { type: "hidden", name: "user_id" },
+                        domProps: { value: _vm.user.id }
+                      }),
+                      _vm._v(" "),
+                      _vm.activePayment
+                        ? _c("input", {
+                            attrs: { type: "hidden", name: "payment_id" },
+                            domProps: { value: _vm.activePayment.id }
+                          })
+                        : _vm._e(),
+                      _vm._v(" "),
+                      _c("v-textarea", {
+                        attrs: {
+                          outlined: "",
+                          name: "body",
+                          label: "Comment",
+                          value: "",
+                          rules: _vm.requiredRule
+                        }
+                      }),
+                      _vm._v(" "),
+                      _c(
+                        "div",
+                        { staticClass: "text-right" },
+                        [
+                          _c(
+                            "v-btn",
+                            {
+                              attrs: { text: "", color: "error" },
+                              on: {
+                                click: function($event) {
+                                  _vm.addComentDialog = false
+                                  _vm.activePayment = null
+                                }
+                              }
+                            },
+                            [_vm._v("close")]
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "v-btn",
+                            { attrs: { type: "submit", color: "primary" } },
+                            [_vm._v("Add payment")]
+                          )
+                        ],
+                        1
+                      )
+                    ],
+                    1
+                  )
+                ],
+                1
+              )
+            ],
+            1
+          )
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c(
+        "v-navigation-drawer",
+        {
+          attrs: { right: "", absolute: "" },
+          model: {
+            value: _vm.commentDrawer,
+            callback: function($$v) {
+              _vm.commentDrawer = $$v
+            },
+            expression: "commentDrawer"
+          }
+        },
+        [
+          _c(
+            "v-app-bar",
+            [
+              _c(
+                "v-app-bar-nav-icon",
+                {
+                  on: {
+                    click: function($event) {
+                      _vm.commentDrawer = false
+                      _vm.activePayment = false
+                    }
+                  }
+                },
+                [_c("v-icon", [_vm._v("mdi-close")])],
+                1
+              ),
+              _vm._v(" "),
+              _c("v-toolbar-title", [_vm._v("Comentarios")])
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c(
+            "v-btn",
+            {
+              staticClass: "ma-3",
+              attrs: { color: "info", small: "" },
+              on: {
+                click: function($event) {
+                  _vm.addComentDialog = true
+                }
+              }
+            },
+            [_vm._v("Add comment")]
+          ),
+          _vm._v(" "),
+          _vm._l(_vm.comments, function(comment, i) {
+            return _c("div", { key: i, staticClass: "comments pa-3" }, [
+              _c("div", { staticClass: "comment" }, [
+                _vm._v("\n          " + _vm._s(comment.body) + "\n          "),
+                _c(
+                  "div",
+                  { staticClass: "text-right" },
+                  [
+                    _c(
+                      "v-btn",
+                      {
+                        attrs: { color: "error", text: "", small: "" },
+                        on: {
+                          click: function($event) {
+                            return _vm.deletShowDialog(comment, i)
+                          }
+                        }
+                      },
+                      [_c("v-icon", [_vm._v("mdi-delete")])],
+                      1
+                    )
+                  ],
+                  1
+                )
+              ])
+            ])
+          })
+        ],
+        2
+      ),
+      _vm._v(" "),
+      _c(
+        "v-dialog",
+        {
+          attrs: {
+            persistent: "",
+            "max-width": "500px",
+            transition: "dialog-transition"
+          },
+          model: {
+            value: _vm.deleteCommentDialog,
+            callback: function($$v) {
+              _vm.deleteCommentDialog = $$v
+            },
+            expression: "deleteCommentDialog"
+          }
+        },
+        [
+          _c(
+            "v-card",
+            [
+              _c(
+                "v-card-title",
+                [
+                  _c("v-icon", [_vm._v("mdi-alert-box")]),
+                  _vm._v(
+                    " Are you sure you want to delete this comment?\n        "
+                  )
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "v-card-actions",
+                { staticClass: "text-right" },
+                [
+                  _c(
+                    "v-btn",
+                    {
+                      attrs: { color: "info", text: "" },
+                      on: {
+                        click: function($event) {
+                          _vm.deleteComment = null
+                          _vm.commentIndex = null
+                          _vm.deleteCommentDialog = false
+                        }
+                      }
+                    },
+                    [_vm._v("Close")]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "v-btn",
+                    {
+                      attrs: { color: "error", text: "" },
+                      on: {
+                        click: function($event) {
+                          return _vm.commentDelete()
                         }
                       }
                     },
@@ -34208,13 +34654,13 @@ var render = function() {
                     _c("v-icon", { attrs: { left: "" } }, [
                       _vm._v("mdi-account-circle")
                     ]),
-                    _vm._v("\n              login\n            ")
+                    _vm._v("\r\n              login\r\n            ")
                   ],
                   1
                 ),
                 _vm._v(" "),
                 _c("v-btn", { attrs: { text: "", href: "/register" } }, [
-                  _vm._v("\n              register\n            ")
+                  _vm._v("\r\n              register\r\n            ")
                 ])
               ]
             : [
@@ -34240,7 +34686,7 @@ var render = function() {
                       }
                     }
                   },
-                  [_vm._v("\n              logout\n            ")]
+                  [_vm._v("\r\n              logout\r\n            ")]
                 )
               ]
         ],
@@ -89703,8 +90149,8 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /Users/fullstack/projects/oneinc/resources/js/app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! /Users/fullstack/projects/oneinc/resources/sass/app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! C:\Users\ing_c\projects\one-inc-test\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! C:\Users\ing_c\projects\one-inc-test\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })
